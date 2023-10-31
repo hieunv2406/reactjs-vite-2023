@@ -12,7 +12,6 @@ class ChildComponent extends React.Component {
         })
     }
     render() {
-        console.log("check props: ", this.props);
         let { arrJobs } = this.props;
         let showJobs = this.state.showJobs;
         return (
@@ -25,7 +24,7 @@ class ChildComponent extends React.Component {
                     arrJobs.map((item, index) => {
                         return (
                         <div key={item.id}>
-                            {item.titleJob} - {item.salary}
+                            {item.title} - {item.salary}$
                         </div>
                     )
                     })}

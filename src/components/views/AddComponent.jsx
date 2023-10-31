@@ -2,13 +2,13 @@ import React from "react";
 class AddComponent extends React.Component {
 
     state = {
-        titleJob: '',
+        title: '',
         salary: ''
     }
     handleOnChangeTitleJob = (event) => {
         this.setState (
             {
-                titleJob: event.target.value
+                title: event.target.value
             }
         )
     }
@@ -20,7 +20,19 @@ class AddComponent extends React.Component {
         )
     }
     handleSubmit = () => {
-        alert("Hi")
+        if (!this.state.title || !this.state.salary) {
+            alert('Input required!!!')
+            return;
+        }
+        this.props.addNewJob({
+            id: Math.floor(Math.random() * 101),
+            title: this.state.title,
+            salary: this.state.salary
+        })
+        this.setState({
+            title: '',
+            salary: ''
+        })
     }
 
     render() {
@@ -29,11 +41,11 @@ class AddComponent extends React.Component {
             <div>Hello Add component</div>
             <label>Form Input:</label> <br/>
             <label>Title Job</label> <br/>
-            <input type="text" value={this.state.titleJob} onChange={(event) => this.handleOnChangeTitleJob(event)}/> <br/>
+            <input type="text" value={this.state.title} onChange={(event) => this.handleOnChangeTitleJob(event)}/> <br/>
             <label>Salary</label> <br/>
             <input type="text" value={this.state.salary} onChange={(event) => this.handleOnChangeSalary(event)}/> <br/>
             <input type="submit" value={"submit"} onClick={() => this.handleSubmit()}/> <br/>
-            <label>My name is {this.state.titleJob} {this.state.salary}</label> <br/>
+            <label>My name is {this.state.title} {this.state.salary}</label> <br/>
             </>
         )
     }
