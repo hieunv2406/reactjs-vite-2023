@@ -38,7 +38,6 @@ class AddComponent extends React.Component {
     render() {
         return (
             <>
-            <div>Hello Add component</div>
             <label>Form Input:</label> <br/>
             <label>Title Job</label> <br/>
             <input type="text" value={this.state.title} onChange={(event) => this.handleOnChangeTitleJob(event)}/> <br/>
