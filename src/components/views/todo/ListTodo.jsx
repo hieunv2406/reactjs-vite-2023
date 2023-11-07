@@ -2,13 +2,13 @@ import React from "react";
 import AddTodo from "./AddTodo";
 
 class ListTodo extends React.Component {
- 
+
     state = {
         btnAdd: false,
-        btnEdit: false,
+        btnEdit: true,
         listTodo: [
         ],
-        todoChoice: {
+        todoSelected: {
             id: '',
             title: '',
             times: ''
@@ -34,40 +34,42 @@ class ListTodo extends React.Component {
             listTodo: currentTodo
         })
     }
-    handleShowEdit = (item) => {
-        let { btnEdit } = this.state;
+    handleChangeTitle = (event) => {
+        let { todoSelected } = this.state;
+        let editTodo = { ...todoSelected };
+        editTodo.title = event.target.value;
         this.setState({
-            btnEdit: !btnEdit
+            todoSelected: editTodo
         })
-        console.log('btn-edit', btnEdit);
+    }
+    handleChangeTime = (event) => {
+        let { todoSelected } = this.state;
+        let editTodo = { ...todoSelected };
+        editTodo.times = event.target.value;
         this.setState({
-            todoChoice: {
+            todoSelected: editTodo
+        })
+    }
+    handleSaveChange = (item) => {
+        let { btnEdit, listTodo, todoSelected } = this.state;
+        if (!btnEdit && item.id === todoSelected.id) {
+            let listTodoCopy = [...listTodo];
+            let objIndex = listTodoCopy.findIndex((obj => obj.id === item.id));
+            listTodoCopy[objIndex].title = todoSelected.title;
+            listTodoCopy[objIndex].times = todoSelected.times;
+            this.setState({
+                btnEdit: !btnEdit,
+                listTodo: listTodoCopy
+            })
+            return;
+        }
+        this.setState({
+            btnEdit: !btnEdit,
+            todoSelected: {
                 id: item.id,
                 title: item.title,
                 times: item.times
             }
-        })
-    }
-    handleChangeTitle = (event) => {
-        this.setState({
-            todoChoice: {
-                title: event.target.value
-            }
-        })
-    }
-    handleChangeTime = (event) => {
-        this.setState({
-            todoChoice: {
-                times: event.target.value
-            }
-        })
-    }
-    handleSaveChange = (id) => {
-        let { listTodo, todoChoice, btnEdit } = this.state;
-        let newListTodo = listTodo.filter(item => item.id !== id)
-        this.setState({
-            listTodo: [newListTodo, todoChoice],
-            btnEdit: !btnEdit
         })
     }
 
@@ -85,19 +87,20 @@ class ListTodo extends React.Component {
                     return (
                         <div key={item.id}>
                             {
-                                this.state.btnEdit && item.id === this.state.todoChoice.id ?
+                                !this.state.btnEdit && item.id === this.state.todoSelected.id ?
                                     <div>
-                                        <input type="text" value={this.state.todoChoice.title} onChange={(event) => this.handleChangeTitle(event)} placeholder="title"/>
-                                        <input type="date" value={this.state.todoChoice.times} onChange={(event) => this.handleChangeTime(event)} />
+                                        <input type="text" value={this.state.todoSelected.title} onChange={(event) => this.handleChangeTitle(event)} placeholder="title" />
+                                        <input type="date" value={this.state.todoSelected.times} onChange={(event) => this.handleChangeTime(event)} />
                                     </div>
-                                    : <div> {index + 1} - {item.title} - {item.times} </div>
+                                    :
+                                    <div> {index + 1} - {item.title} - {item.times} </div>
                             }
-                            {
-                                !this.state.btnEdit ?
-                                    <button key={item.id} onClick={() => this.handleShowEdit(item)}>Edit</button>
-                                    : <button key={item.id} onClick={() => this.handleSaveChange(item.id)}>Save</button>
-                            }
-                                <button key={item.id} onClick={() => this.handleDelete(item.id)}>Delete</button>
+                            <button onClick={() => this.handleSaveChange(item)}>
+                                {
+                                    !this.state.btnEdit && item.id === this.state.todoSelected.id ? 'Save' : 'Edit'
+                                }
+                            </button>
+                            <button onClick={() => this.handleDelete(item.id)}>Delete</button>
                         </div>
                     );
                 })}
